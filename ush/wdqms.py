@@ -484,8 +484,20 @@ class WDQMS:
             q_df = stn_df[stn_df['var_id'] == q_id]
             t_df = stn_df[stn_df['var_id'] == t_id]
 
+            #>>emily
+            # Make sure there are no duplicates in q_df and t_df before merging 
+            columns_to_compare = ['Station_ID', 'Latitude', 'Longitude', 'Pressure', 'Time']
+            q_df = q_df.drop_duplicates(subset=columns_to_compare)
+            t_df = t_df.drop_duplicates(subset=columns_to_compare)
+            #<<emily
+
             # Merge dataframes on common keys using an inner join
             merged_df = pd.merge(q_df, t_df, on=['Station_ID', 'Latitude', 'Longitude', 'Pressure', 'Time'], suffixes=('_q', '_t'), how='inner')
+
+#            #>>emily
+#            columns_to_compare = ['Station_ID', 'Latitude', 'Longitude', 'Pressure', 'Time']
+#            merged_df = merged_df.drop_duplicates(subset=columns_to_compare)
+#            #<<emily
 
             # Calculate needed values
             q_obs = merged_df['Observation_q'].to_numpy() * 1.0e6
